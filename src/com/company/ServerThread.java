@@ -4,9 +4,9 @@ import java.io.*;
 import java.net.*;
 
 /**
- * This thread is responsible to handle client connection.
+ * Example taken from https://www.codejava.net/java-se/networking/java-socket-server-examples-tcp-ip
  *
- * @author www.codejava.net
+ * This is a single threaded server, so you need to think of why and how to use multiple threads with this one.
  */
 public class ServerThread extends Thread {
     private Socket socket;
@@ -17,22 +17,24 @@ public class ServerThread extends Thread {
 
     public void run() {
         try {
-            InputStream input = socket.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+            var input = socket.getInputStream();
+            var reader = new BufferedReader(new InputStreamReader(input));
 
-            OutputStream output = socket.getOutputStream();
-            PrintWriter writer = new PrintWriter(output, true);
+            var output = socket.getOutputStream();
+            var writer = new PrintWriter(output, true);
 
 
             String text;
-            System.out.println(reader.readLine());
             do {
+                System.out.println("Waiting for client's message: ");
                 text = reader.readLine();
-                String reverseText = new StringBuilder(text).reverse().toString();
-                writer.println("Server: " + reverseText);
+                System.out.println("Client's message: " + text);
 
-            } while (!text.equals("bye"));
+                System.out.println("Server sent a message back.");
+                writer.println("Message received.");
 
+            } while (!text.equals("q"));
+            System.out.println("connection closed.");
             socket.close();
         } catch (IOException ex) {
             System.out.println("Server exception: " + ex.getMessage());
